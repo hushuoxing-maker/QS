@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古月 · 轻奢风商业门头 · 完整版AI提示词生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a3a;
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', 'Didot', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #2a2a4a 0%, #4a2a3a 100%);
+        }
+
+        .generator-card {
+            max-width: 1600px;
+            width: 100%;
+            background: #fcf9f5;
+            border-radius: 60px;
+            box-shadow: 0 30px 60px rgba(150,120,150,0.3);
+            overflow: hidden;
+            border: 2px solid #d4bc9a;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3a2a4a 0%, #6a4a5a 100%);
+            padding: 28px 40px;
+            color: #f5e6d3;
+            border-bottom: 4px solid #d4af37;
+            text-shadow: 2px 2px 0 #2a1a2a;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-family: 'Didot', 'Bodoni', serif;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: #e0d0b0;
+            font-weight: 300;
+            border-left: 4px solid #d4af37;
+            padding-left: 20px;
+            font-style: italic;
+        }
+
+        .main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .input-section {
+            flex: 1.2;
+            min-width: 420px;
+            background: #ffffff;
+            padding: 40px 35px;
+            border-right: 1px solid #e5d9cc;
+        }
+
+        .input-section h2 {
+            font-size: 30px;
+            font-weight: 500;
+            color: #3a2a4a;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 15px;
+            font-family: 'Didot', 'Bodoni', serif;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 18px;
+            font-weight: 500;
+            color: #5a4a5a;
+            margin-bottom: 6px;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 16px;
+            background: #fcf9f5;
+            border: 2px solid #d4bc9a;
+            border-radius: 40px;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #d4af37;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+        }
+
+        .input-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #3a2a4a 0%, #6a4a5a 100%);
+            border: none;
+            width: 100%;
+            padding: 18px;
+            font-size: 24px;
+            font-weight: 500;
+            color: #f5e6d3;
+            letter-spacing: 2px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 4px solid #d4af37;
+            margin-top: 20px;
+            font-family: 'Didot', 'Bodoni', serif;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212,175,55,0.2);
+        }
+
+        .output-section {
+            flex: 2;
+            background: #fcf9f5;
+            padding: 40px 35px;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .output-header h2 {
+            font-size: 30px;
+            font-weight: 500;
+            color: #3a2a4a;
+            font-family: 'Didot', 'Bodoni', serif;
+        }
+
+        .badge {
+            background: #d4af37;
+            color: #3a2a4a;
+            padding: 6px 22px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 500;
+            border: 1px solid #b89a7a;
+        }
+
+        .prompts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .prompt-item {
+            background: #ffffff;
+            border: 2px solid #e5d9cc;
+            border-radius: 40px;
+            padding: 22px 25px;
+            transition: 0.2s;
+            position: relative;
+            box-shadow: 0 4px 0 #e5d9cc;
+        }
+
+        .prompt-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #d4af37;
+            border-color: #d4af37;
+        }
+
+        .prompt-number {
+            font-size: 16px;
+            font-weight: 500;
+            color: #d4af37;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            background: #f0e8dd;
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 40px;
+            border: 1px solid #d4bc9a;
+        }
+
+        .prompt-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #4a3a4a;
+            margin-bottom: 12px;
+            padding-right: 90px;
+        }
+
+        .copy-btn {
+            background: #f0e8dd;
+            color: #3a2a4a;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #d4bc9a;
+            position: absolute;
+            bottom: 20px;
+            right: 25px;
+        }
+
+        .copy-btn:hover {
+            background: #d4af37;
+            color: white;
+            border-color: #b89a7a;
+        }
+
+        .copy-btn.copied {
+            background: #4caf50;
+            color: white;
+            border-color: #388e3c;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            font-size: 15px;
+            color: #b89a7a;
+            text-align: right;
+            border-top: 1px dashed #e5d9cc;
+            padding-top: 18px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="generator-card">
+        <div class="header">
+            <h1>✨ 古月 · 轻奢风商业门头 · 专业版 ✨</h1>
+            <p>白天正立面 · 精致高级 · 低调奢华 · 8K商业写实 · 100%可施工落地 · 20组设计不重复</p>
+        </div>
+
+        <div class="main">
+            <div class="input-section">
+                <h2>🎨 输入轻奢门头设计需求</h2>
+                
+                <div class="input-group">
+                    <label>🏪 行业类型</label>
+                    <input type="text" id="industry" value="珠宝店" placeholder="例：珠宝店 / 高级餐厅 / 美容院 / 品牌店">
+                </div>
+
+                <div class="input-group">
+                    <label>🏷️ 品牌店名 (可选)</label>
+                    <input type="text" id="brand" value="臻宝轩" placeholder="例：臻宝轩">
+                </div>
+
+                <div class="input-group">
+                    <label>📋 主营品类 (可选)</label>
+                    <input type="text" id="category" value="高级珠宝" placeholder="例：高级珠宝">
+                </div>
+
+                <div class="input-group">
+                    <label>💬 精致标语 (可选)</label>
+                    <input type="text" id="slogan" value="传世臻品" placeholder="例：传世臻品">
+                </div>
+
+                <div class="input-group">
+                    <label>🔧 其他具体需求 (可选)</label>
+                    <textarea id="extra" rows="2" placeholder="例：香槟金为主、大理石纹路、金属线条等"></textarea>
+                </div>
+
+                <button class="generate-btn" id="generateBtn">⚡ 生成 20 组轻奢门头提示词 ⚡</button>
+            </div>
+
+            <div class="output-section" id="outputSection">
+                <div class="output-header">
+                    <h2>🎯 20组正立面轻奢门头</h2>
+                    <span class="badge" id="countDisplay">0 / 20</span>
+                </div>
+                <div class="prompts-grid" id="promptsList">
+                    <div class="prompt-item" style="background: #fcf5f0; text-align: center; padding: 40px;">
+                        <div class="prompt-number">✨ 点击生成</div>
+                        <div class="prompt-text" style="color: #b89a7a;">将显示20组轻奢门头AI提示词</div>
+                    </div>
+                </div>
+                <div class="footer-note">
+                    ⚡ 每组均为完整描述 · 白天正立面 · 8K写实 · 可直接复制用于即梦AI
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const industryInput = document.getElementById('industry');
+            const brandInput = document.getElementById('brand');
+            const categoryInput = document.getElementById('category');
+            const sloganInput = document.getElementById('slogan');
+            const extraInput = document.getElementById('extra');
+            const generateBtn = document.getElementById('generateBtn');
+            const promptsListDiv = document.getElementById('promptsList');
+            const countDisplay = document.getElementById('countDisplay');
+
+            function setLoading() {
+                promptsListDiv.innerHTML = `<div class="prompt-item" style="background: #fcf5f0; text-align: center; padding: 40px;"><div class="prompt-number">✨ ⏳</div><div class="prompt-text" style="color: #b89a7a;">正在生成20组轻奢门头提示词...</div></div>`;
+                countDisplay.innerText = '0 / 20';
+            }
+
+            function setupCopyButtons() {
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        const promptText = this.getAttribute('data-prompt');
+                        navigator.clipboard.writeText(promptText).then(() => {
+                            const originalText = this.innerHTML;
+                            this.innerHTML = '✓ 已复制';
+                            this.classList.add('copied');
+                            setTimeout(() => {
+                                this.innerHTML = originalText;
+                                this.classList.remove('copied');
+                            }, 2000);
+                        }).catch(() => alert('复制失败'));
+                    });
+                });
+            }
+
+            function generatePrompts(industry, brand, category, slogan, extra) {
+                const prompts = [];
+                
+                // 品牌名备选
+                const brandFallback = brand.trim() || (() => {
+                    const map = {
+                        '珠宝店': '臻宝轩',
+                        '高级餐厅': '御宴',
+                        '美容院': '悦容荟',
+                        '品牌店': '名品汇'
+                    };
+                    return map[industry] || '轻奢荟';
+                })();
+                
+                // 主营品类备选
+                const categoryFallback = category.trim() || (() => {
+                    const map = {
+                        '珠宝店': '高级珠宝',
+                        '高级餐厅': '精致料理',
+                        '美容院': '皮肤管理',
+                        '品牌店': '轻奢精品'
+                    };
+                    return map[industry] || '品质生活';
+                })();
+                
+                // 精致标语备选
+                const sloganFallback = slogan.trim() || (() => {
+                    const list = ['传世臻品', '轻奢生活', '精致如你', '低调奢华', '品味之选', '永恒经典', '极致美学', '匠心传承', '臻于至善', '优雅永存'];
+                    return list[Math.floor(Math.random() * list.length)];
+                })();
+
+                // 大理石类型组合
+                const marbleTypes = [
+                    '爵士白大理石', '卡拉拉白大理石', '雪花白大理石', '鱼肚白大理石', '汉白玉大理石',
+                    '意大利灰大理石', '云多拉灰大理石', '古堡灰大理石', '法国灰大理石', '爱马仕灰大理石',
+                    '蓝金沙大理石', '宝格丽棕大理石', '金镶玉大理石', '黑白根大理石', '深啡网大理石',
+                    '浅啡网大理石', '白金沙大理石', '香榭丽大理石', '雪花青大理石', '玛瑙纹大理石'
+                ];
+
+                // 金属线条类型
+                const metalTypes = [
+                    '玫瑰金金属线条', '香槟金金属线条', '拉丝金金属线条', '钛金金属线条', '古铜色金属线条',
+                    '镜面不锈钢线条', '拉丝铜金属线条', '黑钛金属线条', '枪色金属线条', '哑光金金属线条'
+                ];
+
+                // 不锈钢材质
+                const stainlessTypes = [
+                    '拉丝不锈钢', '镜面不锈钢', '玫瑰金不锈钢', '黑钛不锈钢', '香槟金不锈钢'
+                ];
+
+                // 烤漆板颜色
+                const plateColors = [
+                    '珍珠白烤漆板', '象牙白烤漆板', '米白色烤漆板', '浅灰色烤漆板', '高级灰烤漆板'
+                ];
+
+                for (let i = 0; i < 20; i++) {
+                    const marble = marbleTypes[i % marbleTypes.length];
+                    const metal = metalTypes[i % metalTypes.length];
+                    const stainless = stainlessTypes[i % stainlessTypes.length];
+                    const plate = plateColors[i % plateColors.length];
+                    
+                    // 根据extra调整描述
+                    let extraDesc = '';
+                    if (extra) {
+                        extraDesc = `，${extra}风格`;
+                    }
+                    
+                    // 材质组合变化
+                    let materialDesc;
+                    if (i % 3 === 0) {
+                        materialDesc = `采用${marble}为基底，${metal}收边，${stainless}点缀`;
+                    } else if (i % 3 === 1) {
+                        materialDesc = `采用${plate}为基底，${marble}局部装饰，${metal}勾勒轮廓`;
+                    } else {
+                        materialDesc = `采用${marble}与${plate}拼接，${stainless}边框，${metal}线条分割`;
+                    }
+                    
+                    const prompt = `白天自然光下，某${industry}门头正立面完整展示，正面平视视角，无透视畸变无遮挡。门头为轻奢风格，${materialDesc}，整体精致高级、低调奢华、金属质感、简约大气${extraDesc}。品牌店名“${brandFallback}”搭配主营品类“${categoryFallback}”及精致标语“${sloganFallback}”，优雅轻奢字体，采用精工金字和亚克力背光字结合。日间清晰线条灯、暗藏氛围灯、背光字均匀发光。8K高清商业写实效果图，细节丰富色彩自然，可直接施工参考。`;
+                    
+                    prompts.push(prompt);
+                }
+                
+                return prompts;
+            }
+
+            function renderPrompts(prompts) {
+                if (!prompts || prompts.length === 0) {
+                    promptsListDiv.innerHTML = `<div class="prompt-item" style="background: #fcf5f0; text-align: center; padding: 40px;"><div class="prompt-number">✨ ⚠️</div><div class="prompt-text" style="color: #b89a7a;">生成失败，请重试</div></div>`;
+                    countDisplay.innerText = '0 / 20';
+                    return;
+                }
+
+                let html = '';
+                prompts.forEach((prompt, idx) => {
+                    const escapedPrompt = prompt.replace(/"/g, '&quot;');
+                    html += `
+                        <div class="prompt-item">
+                            <div class="prompt-number">✨ 第 ${idx+1} 组 · 正立面轻奢门头</div>
+                            <div class="prompt-text">${prompt}</div>
+                            <button class="copy-btn" data-prompt="${escapedPrompt}">📋 复制</button>
+                        </div>
+                    `;
+                });
+                
+                promptsListDiv.innerHTML = html;
+                countDisplay.innerText = `${prompts.length} / 20`;
+                setupCopyButtons();
+            }
+
+            function handleGenerate() {
+                const industry = industryInput.value.trim();
+                const brand = brandInput.value.trim();
+                const category = categoryInput.value.trim();
+                const slogan = sloganInput.value.trim();
+                const extra = extraInput.value.trim();
+                
+                if (!industry) {
+                    alert('请输入行业类型');
+                    return;
+                }
+                
+                setLoading();
+                setTimeout(() => {
+                    try {
+                        const prompts = generatePrompts(industry, brand, category, slogan, extra);
+                        renderPrompts(prompts);
+                    } catch (e) {
+                        console.error(e);
+                        promptsListDiv.innerHTML = `<div class="prompt-item" style="background: #fcf5f0; text-align: center; padding: 40px;"><div class="prompt-number">✨ ❌</div><div class="prompt-text" style="color: #b89a7a;">生成出错</div></div>`;
+                        countDisplay.innerText = '0 / 20';
+                    }
+                }, 150);
+            }
+
+            generateBtn.addEventListener('click', handleGenerate);
+            
+            // 默认示例
+            window.addEventListener('load', () => {
+                industryInput.value = '珠宝店';
+                brandInput.value = '臻宝轩';
+                categoryInput.value = '高级珠宝';
+                sloganInput.value = '传世臻品';
+                extraInput.value = '香槟金为主、大理石纹路、金属线条';
+                setTimeout(handleGenerate, 200);
+            });
+        })();
+    </script>
+</body>
+</html>
